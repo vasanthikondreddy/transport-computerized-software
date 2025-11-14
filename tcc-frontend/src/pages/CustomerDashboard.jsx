@@ -5,7 +5,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { motion } from 'framer-motion';
 
 function CustomerDashboard() {
-  const [form, setForm] = useState({ volume: '', destination: '' });
+  const [form, setForm] = useState({
+    volume: '',
+    destination: ''
+  });
+
   const [consignments, setConsignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
@@ -14,15 +18,14 @@ function CustomerDashboard() {
     setLoading(true);
     API.get('/consignments/all')
       .then(res => {
-        const userId = localStorage.getItem('userId');
-        const all = Array.isArray(res.data) ? res.data : res.data.consignments;
-        const userConsignments = all?.filter(c => c.sender?._id === userId);
-        setConsignments(userConsignments || []);
+        const data = Array.isArray(res.data) ? res.data : res.data.consignments;
+        setConsignments(data || []);
       })
       .catch(err => {
+        console.error('Fetch error:', err.response?.data || err.message);
         if (err.response?.status === 401) {
           toast.error('Session expired. Redirecting to login...');
-          setTimeout(() => window.location.href = '/login', 2000);
+          setTimeout(() => (window.location.href = '/login'), 2000);
         } else {
           toast.error('Failed to load consignments');
         }
@@ -45,8 +48,9 @@ function CustomerDashboard() {
 
   const handleSubmit = async () => {
     const volumeNum = Number(form.volume);
+
     if (!form.destination || !form.volume) {
-      toast.error('Please fill all fields');
+      toast.error('Please fill all required fields');
       return;
     }
     if (isNaN(volumeNum) || volumeNum <= 0 || volumeNum > 500) {
@@ -55,26 +59,35 @@ function CustomerDashboard() {
     }
 
     try {
-      await API.post('/consignments/submit', {
-        ...form,
-        volume: volumeNum,
-      });
+      const token = localStorage.getItem('token');
+      await API.post(
+        '/consignments/submit',
+        {
+          sender: localStorage.getItem('userId'),
+          volume: volumeNum,
+          destination: form.destination
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       toast.success('Consignment submitted!');
       setForm({ volume: '', destination: '' });
       fetchConsignments();
     } catch (err) {
+      console.error('Submission error:', err.response?.data || err.message);
       if (err.response?.status === 401) {
         toast.error('Session expired. Redirecting to login...');
-        setTimeout(() => window.location.href = '/login', 2000);
+        setTimeout(() => (window.location.href = '/login'), 2000);
       } else {
-        toast.error('Submission failed');
+        toast.error(err.response?.data?.error || 'Submission failed');
       }
     }
   };
 
-  const filteredConsignments = statusFilter === 'all'
-    ? consignments
-    : consignments.filter(c => c.status === statusFilter);
+  const filteredConsignments =
+    statusFilter === 'all'
+      ? consignments
+      : consignments.filter(c => c.status === statusFilter);
 
   return (
     <motion.div
@@ -91,6 +104,7 @@ function CustomerDashboard() {
         {/* Submit Form */}
         <div className="bg-white rounded-xl shadow-md p-5 hover:shadow-lg transition">
           <h2 className="text-xl font-semibold mb-4">📦 Submit New Consignment</h2>
+
           <input
             type="text"
             placeholder="Destination"
@@ -105,6 +119,7 @@ function CustomerDashboard() {
             value={form.volume}
             onChange={e => setForm({ ...form, volume: e.target.value })}
           />
+
           <button
             onClick={handleSubmit}
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition w-full"
@@ -125,7 +140,6 @@ function CustomerDashboard() {
             </button>
           </div>
 
-          {/* Status Filter */}
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
@@ -133,8 +147,9 @@ function CustomerDashboard() {
           >
             <option value="all">All Statuses</option>
             <option value="pending">Pending</option>
-            <option value="in-transit">In Transit</option>
+            <option value="dispatched">Dispatched</option>
             <option value="delivered">Delivered</option>
+            <option value="delayed">Delayed</option>
           </select>
 
           {loading ? (
@@ -147,11 +162,19 @@ function CustomerDashboard() {
                 <li key={item._id} className="border rounded-lg p-3 shadow-sm bg-gray-50">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-medium text-green-800">{item.destination}</span>
-                    <span className={`text-xs px-2 py-1 rounded text-white transition ${
-                      item.status === 'pending' ? 'bg-yellow-500' :
-                      item.status === 'in-transit' ? 'bg-blue-500' :
-                      item.status === 'delivered' ? 'bg-green-600' : 'bg-gray-400'
-                    }`}>
+                    <span
+                      className={`text-xs px-2 py-1 rounded text-white transition ${
+                        item.status === 'pending'
+                          ? 'bg-yellow-500'
+                          : item.status === 'dispatched'
+                          ? 'bg-blue-500'
+                          : item.status === 'delivered'
+                          ? 'bg-green-600'
+                          : item.status === 'delayed'
+                          ? 'bg-red-600'
+                          : 'bg-gray-400'
+                      }`}
+                    >
                       {item.status}
                     </span>
                   </div>

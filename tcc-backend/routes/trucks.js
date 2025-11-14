@@ -7,7 +7,7 @@ const Consignment = require('../models/Consignment');
 const auth = require('../middleware/auth');
 const requireRole = require('../middleware/role');
 
-// Helper: Find available driver from branch
+
 const getAvailableDriver = async (branchId) => {
   const driver = await User.findOne({
     role: 'driver',
@@ -17,13 +17,12 @@ const getAvailableDriver = async (branchId) => {
   return driver?._id || null;
 };
 
-// GET: Truck status with full details
+
 router.get('/status', async (req, res) => {
   const trucks = await Truck.find().populate('assignedDriver branch');
   res.json(trucks);
 });
 
-// POST: Add truck with auto-assigned driver
 router.post('/add', auth, requireRole('branchManager'), async (req, res) => {
   const { location, number, capacity, branch, assignedDriver } = req.body;
 
@@ -33,7 +32,7 @@ router.post('/add', auth, requireRole('branchManager'), async (req, res) => {
 
   let finalDriver = assignedDriver;
 
-  // Auto-assign if no driver selected
+ 
   if (!assignedDriver) {
     finalDriver = await getAvailableDriver(branch);
   }
@@ -50,8 +49,6 @@ router.post('/add', auth, requireRole('branchManager'), async (req, res) => {
   });
 
   await truck.save();
-
-  // Update driver's assignedTruck if assigned
   if (finalDriver) {
     await User.findByIdAndUpdate(finalDriver, { assignedTruck: truck._id });
   }
@@ -59,13 +56,12 @@ router.post('/add', auth, requireRole('branchManager'), async (req, res) => {
   res.status(201).json({ message: 'Truck added successfully', truck });
 });
 
-// GET: All trucks (lightweight)
 router.get('/all', auth, async (req, res) => {
   const trucks = await Truck.find().populate('assignedDriver', 'name');
   res.json({ trucks });
 });
 
-// DELETE: Truck
+
 router.delete('/:id', auth, async (req, res) => {
   const allowedRoles = ['admin', 'branchManager'];
   if (!allowedRoles.includes(req.user.role)) {
@@ -83,7 +79,6 @@ router.delete('/:id', auth, async (req, res) => {
   res.json({ message: 'Truck deleted successfully' });
 });
 
-// PATCH: Update truck usage stats
 router.patch('/update-usage/:id', auth, requireRole('branchManager'), async (req, res) => {
   try {
     const truckId = req.params.id;

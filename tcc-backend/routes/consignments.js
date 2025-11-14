@@ -50,87 +50,106 @@ router.post('/', async (req, res) => {
   }
 });
 router.post('/submit', auth, async (req, res) => {
-  const { volume, destination } = req.body;
-  if (!volume || volume <= 0 || volume > 500) {
-    return res.status(400).json({ message: 'Invalid volume. Must be between 1 and 500.' });
-  }
   try {
+    if (!req.user || req.user.role !== 'customer') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const { destination, volume } = req.body;
+    if (!destination || !volume) {
+      return res.status(400).json({ message: 'Destination and volume are required' });
+    }
+
     const consignment = new Consignment({
       sender: req.user.id,
+      destination,
       volume,
-      destination
+      status: 'pending',
+      createdAt: new Date()
     });
+
     await consignment.save();
-    await consignment.populate('sender', 'name email');
-    const totalVolume = await Consignment.aggregate([
-      { $match: { destination, status: 'pending' } },
-      { $group: { _id: null, total: { $sum: '$volume' } } }
-    ]);
-    const currentVolume = totalVolume[0]?.total || 0;
-    if (currentVolume >= 500) {
-      const truck = await Truck.findOne({ status: 'idle' });
-      if (truck && truck.driverId) {
-        console.log('Truck selected:', truck.name);
-        console.log('Assigning driver:', truck.driverId);
-        truck.status = 'in-transit';
-        truck.assignedVolume = currentVolume;
-        truck.lastUsed = new Date();
-        await truck.save();
-        await Consignment.updateMany(
-          { destination, status: 'pending' },
-          {
-            status: 'dispatched',
-            assignedDriver: truck.driverId
-          }
-        );
-      } else {
-        console.log('No idle truck with driver available — consignments remain pending');
-      }
-    }
-    res.json({ message: 'Consignment submitted', consignment });
+    res.status(201).json({ message: 'Consignment submitted', consignment });
   } catch (err) {
-    res.status(500).json({ message: 'Error submitting consignment', error: err.message });
+    console.error("Consignment submit error:", err);
+    res.status(500).json({ message: 'Failed to submit consignment', error: err.message });
   }
 });
-// router.put('/:id/assign-truck', async (req, res) => {
-//   const { truckId } = req.body;
-//   const consignment = await Consignment.findById(req.params.id);
-//   const truck = await Truck.findById(truckId);
-//   if (!truck || truck.status !== 'Available') return res.status(400).send('Truck not available');
-//   consignment.truck = truckId;
-//   consignment.status = 'Dispatched';
-//   await consignment.save();
-//   truck.status = 'In Transit';
-//   await truck.save();
-//   res.send({ success: true });
-// });
+
 router.get('/all', auth, async (req, res) => {
   try {
-    let query = {};
-
-    if (req.user.role === 'customer') {
-      query = { sender: req.user.id };
-    } else if (req.user.role === 'branchManager') {
-      query = { branch: req.user.branch };
-    } else if (req.user.role === 'driver') {
-      query = { assignedDriver: req.user.id };
+    if (!req.user || req.user.role !== 'branchManager') {
+      return res.status(403).json({ message: 'Access denied' });
     }
 
-    console.log("Consignment query:", query); // ✅ debug
-
-    const consignments = await Consignment.find(query)
-      .populate('branch', 'name')
+    const consignments = await Consignment.find({ branch: req.user.branchId })
       .populate('truck', 'number')
-      .populate('sender', 'name email')
+      .populate('branch', 'name')
       .populate('assignedDriver', 'name');
+
+    res.json({ consignments });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch consignments', error: err.message });
+  }
+});
+
+router.put('/assign/:id', auth, requireRole('branchManager'), async (req, res) => {
+  try {
+    const { branch, truck, assignedDriver } = req.body; // assignedDriver must be ObjectId
+
+    const consignment = await Consignment.findByIdAndUpdate(
+      req.params.id,
+      { branch, truck, assignedDriver },   // ✅ driver’s _id, not name
+      { new: true }
+    ).populate('branch', 'name')
+     .populate('truck', 'number')
+     .populate('assignedDriver', 'name');
+
+    if (!consignment) return res.status(404).json({ message: 'Consignment not found' });
+
+    res.json({ message: 'Assignment updated', consignment });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to assign', error: err.message });
+  }
+});
+
+
+
+
+// Manager: list consignments for their branch
+router.get('/branch', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'branchManager') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    if (!req.user.branchId) {
+      return res.status(400).json({ message: 'Manager has no branch assigned' });
+    }
+
+    const consignments = await Consignment.find({ branch: req.user.branchId })
+      .populate('branch', 'name')
+      .populate('truck', 'number location capacity')
+      .populate('assignedDriver', 'name');
+
+    res.json({ consignments });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch consignments', error: err.message });
+  }
+});
+
+router.get('/driver/consignments', auth, async (req, res) => {
+  try {
+    const consignments = await Consignment.find({ assignedDriver: req.user.id })
+      .populate('truck', 'number')
+      .populate('branch', 'name')
+      .populate('sender', 'name email');
 
     res.json({ consignments });
   } catch (err) {
     res.status(500).json({ message: 'Error fetching consignments', error: err.message });
   }
 });
-
-
 router.get('/my', auth, requireRole('customer'), async (req, res) => {
   try {
     const consignments = await Consignment.find({ sender: req.user.id });

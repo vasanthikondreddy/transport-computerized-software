@@ -28,7 +28,7 @@ function Navbar() {
    <nav className="bg-gradient-to-r from-indigo-600 via-sky-500 to-cyan-400 text-white shadow-md px-4 py-2">
 
       <div className="flex justify-between items-center">
-        {/* Brand + Greeting */}
+        
         <div className="flex items-center gap-4">
           <div className="text-2xl font-bold tracking-wide">🚚 TCC Platform</div>
           {name && (
@@ -43,7 +43,7 @@ function Navbar() {
           )}
         </div>
 
-        {/* Mobile Toggle */}
+        
         <button
           className="md:hidden text-white focus:outline-none text-xl"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -52,7 +52,7 @@ function Navbar() {
         </button>
       </div>
 
-      {/* Navigation Links */}
+     
       <div className={`mt-4 md:mt-0 ${menuOpen ? 'block' : 'hidden'} md:flex md:justify-end md:items-center`}>
         <div className="flex flex-col md:flex-row gap-3 text-sm font-medium">
           <Link to="/register" className="hover:text-yellow-200 transition">Register</Link>

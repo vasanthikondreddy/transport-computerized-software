@@ -1,11 +1,15 @@
-// ConsignmentRow.jsx
+import axios from 'axios';
+import { toast } from 'react-toastify';
 import AssignTruck from './AssignTruck';
 
 const ConsignmentRow = ({ consignment }) => {
-  const updateStatus = (newStatus) => {
-    axios.patch(`/api/consignments/${consignment._id}`, { status: newStatus })
-      .then(() => alert('Status updated'))
-      .catch(err => alert('Update failed'));
+  const updateStatus = async (newStatus) => {
+    try {
+      await axios.put(`/consignments/update-status/${consignment._id}`, { status: newStatus });
+      toast.success('Status updated');
+    } catch (err) {
+      toast.error('Update failed');
+    }
   };
 
   return (
@@ -15,8 +19,15 @@ const ConsignmentRow = ({ consignment }) => {
       <td>{consignment.truck?.number || 'Unassigned'}</td>
       <td><AssignTruck consignmentId={consignment._id} /></td>
       <td>
-        <button onClick={() => updateStatus('Delivered')} className="btn-success">Mark Delivered</button>
+        <button
+          onClick={() => updateStatus('delivered')}
+          className="btn-success"
+        >
+          Mark Delivered
+        </button>
       </td>
     </tr>
   );
 };
+
+export default ConsignmentRow;

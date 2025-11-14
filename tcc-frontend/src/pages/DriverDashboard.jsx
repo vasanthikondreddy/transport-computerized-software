@@ -7,24 +7,15 @@ const DriverDashboard = () => {
   const [consignments, setConsignments] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const role = localStorage.getItem('role');
-    const token = localStorage.getItem('token');
-
-    if (role !== 'driver' || !token) {
-      window.location.href = '/unauthorized';
-      return;
-    }
-
-    fetchConsignments();
-  }, []);
-
   const fetchConsignments = async () => {
     setLoading(true);
     try {
-      const res = await API.get('/driver/consignments');
-      const data = Array.isArray(res.data) ? res.data : res.data.consignments;
-      console.log("Fetched consignments:", data); // ✅ debug
+      const res = await API.get('consignments/driver/consignments', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+
+      const data = Array.isArray(res.data) ? res.data : res.data.consignments || res.data;
+      console.log("Fetched consignments:", data);
       setConsignments(data);
     } catch (err) {
       console.error('Fetch error:', err);
@@ -33,6 +24,10 @@ const DriverDashboard = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchConsignments(); 
+  }, []);
 
   return (
     <div className="p-6 bg-gradient-to-br from-gray-50 to-green-50 min-h-screen">
@@ -80,7 +75,9 @@ const DriverDashboard = () => {
                   </td>
                   <td className="p-3 border">{c.truck?.number || '—'}</td>
                   <td className="p-3 border">{c.volume}</td>
-                  <td className="p-3 border">{new Date(c.createdAt).toLocaleString()}</td>
+                  <td className="p-3 border">
+                    {c.createdAt ? new Date(c.createdAt).toLocaleString() : '—'}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -13,7 +13,7 @@ router.post(
     body('email').isEmail().withMessage('Valid email required'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
     body('role').isIn(['driver', 'branchManager', 'admin', 'customer']).withMessage('Invalid role'),
-    body('branch').optional().isMongoId().withMessage('Branch must be a valid ID') // ✅ optional but validated
+    body('branch').optional().isMongoId().withMessage('Branch must be a valid ID') 
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -32,7 +32,7 @@ router.post(
       const hashedPassword = bcrypt.hashSync(password, 10);
       const user = new User({ name, email, password: hashedPassword, role });
 
-      // ✅ Assign branch if applicable
+     
       if (['branchManager', 'driver'].includes(role) && branch) {
         user.branch = branch;
       }
@@ -63,11 +63,11 @@ router.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
-    // ✅ Include branch in token if present
+  
     const tokenPayload = {
       id: user._id,
       role: user.role,
-      ...(user.branch && { branch: user.branch }) // ✅ only include if exists
+      ...(user.branch && { branch: user.branch })
     };
 
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '1d' });

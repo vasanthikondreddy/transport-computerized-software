@@ -1,4 +1,4 @@
-// controllers/managerController.js
+
 const Consignment = require('../models/Consignment');
 
 exports.assignDriverToConsignment = async (req, res) => {

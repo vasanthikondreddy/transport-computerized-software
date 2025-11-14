@@ -9,8 +9,8 @@ export default function DriverAssignmentPanel() {
   const [selectedConsignment, setSelectedConsignment] = useState('');
 
   useEffect(() => {
-    axios.get('/api/manager/drivers').then(res => setDrivers(res.data));
-    axios.get('/api/manager/consignments').then(res => setConsignments(res.data));
+    axios.get('/manager/drivers').then(res => setDrivers(res.data));
+    axios.get('/manager/consignments').then(res => setConsignments(res.data));
   }, []);
 
   const handleAssign = async () => {

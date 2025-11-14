@@ -14,8 +14,6 @@ router.get('/summary', auth, async (req, res) => {
     const volumeByDestination = await Consignment.aggregate([
       { $group: { _id: '$destination', totalVolume: { $sum: '$volume' } } }
     ]);
-
-    // Average waiting time (dispatched consignments)
     const dispatchedConsignments = await Consignment.find({ status: 'dispatched' }, 'createdAt dispatchedAt');
     const totalWaitTime = dispatchedConsignments.reduce((sum, c) => {
       if (c.dispatchedAt && c.createdAt) {
@@ -24,10 +22,10 @@ router.get('/summary', auth, async (req, res) => {
       return sum;
     }, 0);
     const avgWaitingTime = dispatchedConsignments.length
-      ? totalWaitTime / dispatchedConsignments.length / (1000 * 60 * 60) // in hours
+      ? totalWaitTime / dispatchedConsignments.length / (1000 * 60 * 60) 
       : 0;
 
-    // Average truck idle time
+    
     const idleTrucks = await Truck.find({ status: 'idle' }, 'lastUsed');
     const now = Date.now();
     const totalIdleTime = idleTrucks.reduce((sum, t) => {
@@ -37,7 +35,7 @@ router.get('/summary', auth, async (req, res) => {
       return sum;
     }, 0);
     const avgIdleTime = idleTrucks.length
-      ? totalIdleTime / idleTrucks.length / (1000 * 60 * 60) // in hours
+      ? totalIdleTime / idleTrucks.length / (1000 * 60 * 60) 
       : 0;
 
     res.json({

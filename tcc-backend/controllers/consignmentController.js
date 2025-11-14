@@ -9,38 +9,23 @@ const getAllConsignments = async (req, res) => {
   }
 };
 
-exports.getDriverConsignments = async (req, res) => {
-  try {
-    const driverId = req.user._id;
 
-    const consignments = await Consignment.find({ assignedDriver: driverId })
-      .populate('truck')
-      .populate('sender');
-
-    res.status(200).json(consignments);
-  } catch (error) {
-    console.error('Error fetching driver consignments:', error);
-    res.status(500).json({ message: 'Failed to fetch consignments' });
-  }
-};
 
 
 exports.createConsignment = async (req, res) => {
   try {
-    const { volume, destination, truck: truckId } = req.body;
+    const { volume, destination, truck: truckId, assignedDriver } = req.body;
     const senderId = req.user._id;
 
     const truck = await Truck.findById(truckId);
     if (!truck) return res.status(404).json({ message: 'Truck not found' });
-
-    const assignedDriver = truck.assignedDriver;
 
     const consignment = new Consignment({
       sender: senderId,
       volume,
       destination,
       truck: truckId,
-      assignedDriver // auto-assigned from truck
+      assignedDriver 
     });
 
     await consignment.save();
@@ -51,5 +36,6 @@ exports.createConsignment = async (req, res) => {
     res.status(500).json({ message: 'Failed to create consignment' });
   }
 };
+
 
 module.exports = { getAllConsignments,getDriverConsignments, createConsignment };

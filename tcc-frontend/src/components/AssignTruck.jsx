@@ -38,8 +38,7 @@ const AssignTruck = () => {
         { withCredentials: true }
       );
 
-      // Update truck usage after assignment
-      await axios.patch(`/api/trucks/update-usage/${selectedTruck}`, {}, { withCredentials: true });
+      await axios.patch(`/trucks/update-usage/${selectedTruck}`, {}, { withCredentials: true });
 
       toast.success('Truck assigned and usage updated');
       fetchData(); // Refresh lists

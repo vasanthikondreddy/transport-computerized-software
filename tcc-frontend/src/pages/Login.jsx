@@ -47,7 +47,7 @@ function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#a1c4fd] via-[#c2e9fb] to-[#d4fc79] animate-gradient-x px-4">
       <div className="bg-white/20 backdrop-blur-2xl border border-white/30 shadow-2xl rounded-3xl p-8 w-full max-w-md transition-all duration-300 hover:scale-[1.01] animate-fade-in ring-1 ring-white/40 ring-inset">
-        {/* Logo */}
+       
       
 
         <h2 className="text-4xl font-extrabold text-center text-[#0b2a5b] mb-8 drop-shadow-md tracking-wide">

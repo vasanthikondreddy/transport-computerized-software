@@ -5,7 +5,7 @@ const FinanceDashboard = () => {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch pending invoices
+  
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
@@ -20,7 +20,6 @@ const FinanceDashboard = () => {
     fetchInvoices();
   }, []);
 
-  // Approve or reject invoice
   const updateInvoiceStatus = async (invoiceId, newStatus) => {
     try {
       await axios.patch(`/invoices/${invoiceId}/status`, { status: newStatus });
