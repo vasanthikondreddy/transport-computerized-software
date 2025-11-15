@@ -20,7 +20,6 @@ app.use('/api/manager', managerRoutes);
 app.use('/api/driver', driverRoutes);
 app.use('/api/branches', require('./routes/branches'));
 app.use('/api/invoices', require('./routes/invoices'));
-
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('✅ MongoDB connected'))
 .catch((err) => console.error('❌ MongoDB connection error:', err));

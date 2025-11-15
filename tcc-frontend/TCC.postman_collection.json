@@ -1,0 +1,363 @@
+{
+	"info": {
+		"_postman_id": "ceef1122-4800-48ec-8a5f-e34a584a8fed",
+		"name": "TCC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45614581"
+	},
+	"item": [
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"vasanthi\",\r\n  \"email\": \"vasanthi@gmail.com\",\r\n  \"password\":\"vasanthi123\",\r\n  \"role\": \"manager\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"krishna@gmail.com\",\r\n    \"password\": \"krishna123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add trucks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZmY3MDVjOTNkYzdlYjE5YjVkNGI3MyIsInJvbGUiOiJtYW5hZ2VyIiwiaWF0IjoxNzYxNTg5MDgwfQ.iL723MUoTJAm58LU2ncbdn1umFLHH4a1TvIyqzHACGc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"location\": \"Kadapa\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/trucks/add",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"trucks",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add consignments",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDA3YTgzZDgwZTI0NmIxNDZlOTUxYSIsInJvbGUiOiJkcml2ZXIiLCJpYXQiOjE3NjE2MzkwNzF9.IBI9N0oSvHKfbkdLa_RvrptHoKyExim9sdkquuX40qw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZmY3MDVjOTNkYzdlYjE5YjVkNGI3MyIsInJvbGUiOiJtYW5hZ2VyIiwiaWF0IjoxNzYxNTg5MDgwfQ.iL723MUoTJAm58LU2ncbdn1umFLHH4a1TvIyqzHACGc",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"volume\": 300,\r\n  \"destination\": \"tirupati\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/consignments/submit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"consignments",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view consignements",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDA0YWYzOGVkMDNjNzE4ZWM0OGVjMCIsInJvbGUiOiJicmFuY2hNYW5hZ2VyIiwiaWF0IjoxNzYxNjI2ODk3fQ.POPLiGXpP1WAmaAT_Qdxcw1eo-EwBErYw524iZtV_oA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/consignments/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"consignments",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view trucks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZmY3MDVjOTNkYzdlYjE5YjVkNGI3MyIsInJvbGUiOiJtYW5hZ2VyIiwiaWF0IjoxNzYxNTg5OTg1fQ.IZGqHuOZHZjt6O5LOTBHYYT1qx3qeu3rCi3FcfzLx4o",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/trucks/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"trucks",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "summary assignments",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "view assigned consignements",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDA3YTgzZDgwZTI0NmIxNDZlOTUxYSIsInJvbGUiOiJkcml2ZXIiLCJpYXQiOjE3NjE2NDA5NDl9.EYoelqJcqpFCpVvkWT02AtnoCf_VAw12LG87ik-85Rc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"status\": \"delivered\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/consignments/update-status/69007fec57435545618ce0b4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"consignments",
+						"update-status",
+						"69007fec57435545618ce0b4"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": "69007fec57435545618ce0b4",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "history consignments",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "consignement details by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDA3YTgzZDgwZTI0NmIxNDZlOTUxYSIsInJvbGUiOiJkcml2ZXIiLCJpYXQiOjE3NjE2NDI1Mjh9.LMoLc3ikIfg5qr9Bn56ilme8QUfknpl_axnci3OIClY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000 /api/consignments/69007fec57435545618ce0b4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000 ",
+					"path": [
+						"api",
+						"consignments",
+						"69007fec57435545618ce0b4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "filters",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDA0YWYzOGVkMDNjNzE4ZWM0OGVjMCIsInJvbGUiOiJicmFuY2hNYW5hZ2VyIiwiaWF0IjoxNzYxNjQzMDgwfQ.ind2DAl7hArSXuuxWQCh-i7ZZwAH-it_yBkIUyLyYDE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/consignments/filter?destination=tirupati&status=dispatched",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"consignments",
+						"filter"
+					],
+					"query": [
+						{
+							"key": "destination",
+							"value": "tirupati"
+						},
+						{
+							"key": "status",
+							"value": "dispatched"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

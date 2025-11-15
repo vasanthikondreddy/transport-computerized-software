@@ -54,7 +54,6 @@ function Login() {
           🚀 Login to TCC
         </h2>
 
-        {/* Email Field */}
         <div className="relative mb-6">
           <FaEnvelope className="absolute left-4 top-4 text-[#0b2a5b]" />
           <input
@@ -69,7 +68,7 @@ function Login() {
           </label>
         </div>
 
-        {/* Password Field */}
+        
         <div className="relative mb-6">
           <FaLock className="absolute left-4 top-4 text-[#0b2a5b]" />
           <input
@@ -84,7 +83,6 @@ function Login() {
           </label>
         </div>
 
-        {/* Role Selector */}
         <div className="relative mb-6">
           <FaUserShield className="absolute left-4 top-4 text-[#0b2a5b]" />
           <select
@@ -100,7 +98,7 @@ function Login() {
           </select>
         </div>
 
-        {/* Submit Button */}
+        
         <button
           onClick={handleLogin}
           disabled={loading}
@@ -113,7 +111,7 @@ function Login() {
           {loading ? 'Logging in...' : 'Login'}
         </button>
 
-        {/* Register Link */}
+       
         <p className="mt-6 text-center text-sm text-gray-700">
           Don’t have an account?{' '}
           <Link to="/register" className="text-[#0b2a5b] font-semibold hover:underline">
@@ -122,7 +120,6 @@ function Login() {
         </p>
       </div>
 
-      {/* Tailwind animation extension */}
       <style>{`
         @keyframes gradient-x {
           0%, 100% { background-position: 0% 50%; }

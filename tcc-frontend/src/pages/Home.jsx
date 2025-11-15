@@ -61,7 +61,7 @@ export default function Home() {
         animate={{ scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        Welcome to TCC Logistics
+        Welcome to TCCS Logistics
       </motion.h1>
 
       <motion.p

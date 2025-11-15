@@ -78,7 +78,7 @@ router.post('/submit', auth, async (req, res) => {
 
 router.get('/all', auth, async (req, res) => {
   try {
-    if (!req.user || req.user.role !== 'branchManager') {
+    if (!req.user ) {
       return res.status(403).json({ message: 'Access denied' });
     }
 
