@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api', // or your deployed URL
+  baseURL: 'https://transport-computerized-software.onrender.com/api', // or your deployed URL
 });
 
 
