@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ManagerSummaryCards from '../components/ManagerSummaryCards';
 import TruckManagement from '../components/TruckManagement';
-import TruckOverview from '../components/TruckOverview';
+// import TruckOverview from '../components/TruckOverview';
 import InvoiceForm from '../components/InvoiceForm';
 import InvoiceSummary from '../components/InvoiceSummary';
 import { toast, ToastContainer } from 'react-toastify';
